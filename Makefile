@@ -12,41 +12,41 @@ BUILDTIME ?= $(shell date '+%Y%m%d-%H:%M:%S')
 
 build: static
 	for target in $(WHAT); do \
-		go build -ldflags "-X github.com/ricoberger/go-vue-starter/pkg/version.Version=${VERSION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Revision=${REVISION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Branch=${BRANCH} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildUser=${BUILDUSER} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildDate=${BUILDTIME}" \
+		go build -ldflags "-X github.com/aovlllo/vue-template/pkg/version.Version=${VERSION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Revision=${REVISION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Branch=${BRANCH} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildUser=${BUILDUSER} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME}" \
 			-o ./bin/$$target ./cmd/$$target; \
 	done
 
 build-darwin-amd64:
 	for target in $(WHAT); do \
-		CGO_ENABLED=0 GOARCH=amd64 GOOS=darwin go build -a -installsuffix cgo -ldflags "-X github.com/ricoberger/go-vue-starter/pkg/version.Version=${VERSION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Revision=${REVISION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Branch=${BRANCH} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildUser=${BUILDUSER} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildDate=${BUILDTIME}" \
+		CGO_ENABLED=0 GOARCH=amd64 GOOS=darwin go build -a -installsuffix cgo -ldflags "-X github.com/aovlllo/vue-template/pkg/version.Version=${VERSION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Revision=${REVISION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Branch=${BRANCH} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildUser=${BUILDUSER} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME}" \
 			-o ./bin/go-vue-starter-${VERSION}-darwin-amd64/$$target ./cmd/$$target; \
 	done
 
 build-linux-amd64:
 	for target in $(WHAT); do \
-		CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -a -installsuffix cgo -ldflags "-X github.com/ricoberger/go-vue-starter/pkg/version.Version=${VERSION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Revision=${REVISION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Branch=${BRANCH} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildUser=${BUILDUSER} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildDate=${BUILDTIME}" \
+		CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -a -installsuffix cgo -ldflags "-X github.com/aovlllo/vue-template/pkg/version.Version=${VERSION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Revision=${REVISION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Branch=${BRANCH} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildUser=${BUILDUSER} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME}" \
 			-o ./bin/go-vue-starter-${VERSION}-linux-amd64/$$target ./cmd/$$target; \
 	done
 
 build-windows-amd64:
 	for target in $(WHAT); do \
-		CGO_ENABLED=0 GOARCH=amd64 GOOS=windows go build -a -installsuffix cgo -ldflags "-X github.com/ricoberger/go-vue-starter/pkg/version.Version=${VERSION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Revision=${REVISION} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.Branch=${BRANCH} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildUser=${BUILDUSER} \
-			-X github.com/ricoberger/go-vue-starter/pkg/version.BuildDate=${BUILDTIME}" \
+		CGO_ENABLED=0 GOARCH=amd64 GOOS=windows go build -a -installsuffix cgo -ldflags "-X github.com/aovlllo/vue-template/pkg/version.Version=${VERSION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Revision=${REVISION} \
+			-X github.com/aovlllo/vue-template/pkg/version.Branch=${BRANCH} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildUser=${BUILDUSER} \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME}" \
 			-o ./bin/go-vue-starter-${VERSION}-windows-amd64/$$target.exe ./cmd/$$target; \
 	done
 

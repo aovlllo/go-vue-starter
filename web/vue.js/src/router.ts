@@ -15,9 +15,6 @@ const router = new Router({
     {path: '/login', name: 'login', component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')},
     {path: '/signup', name: 'signup', component: () => import(/* webpackChunkName: "signup" */ './views/Signup.vue')},
     {path: '/welcome', name: 'welcome', component: () => import(/* webpackChunkName: "welcome" */ './views/Welcome.vue')},
-    {path: '/verify/:id/:token', name: 'verify', component: () => import(/* webpackChunkName: "verify" */ './views/Verify.vue')},
-    {path: '/forgot-password', name: 'forgot-password', component: () => import(/* webpackChunkName: "forgot-password" */ './views/ForgotPassword.vue')},
-    {path: '/reset-password/:id/:token', name: 'reset-password', component: () => import(/* webpackChunkName: "reset-password" */ './views/ResetPassword.vue')},
     {path: '/profile', name: 'profile', component: () => import(/* webpackChunkName: "profile" */ './views/Profile.vue'), meta: { requiresAuth: true }},
 
     {path: '/404', alias: '*', name: 'notfound', component: () => import(/* webpackChunkName: "notfound" */ './views/NotFound.vue')},

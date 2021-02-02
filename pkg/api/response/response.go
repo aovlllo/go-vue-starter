@@ -2,9 +2,8 @@ package response
 
 import (
 	"encoding/json"
+	"github.com/rs/zerolog/log"
 	"net/http"
-
-	"github.com/sirupsen/logrus"
 )
 
 // Error represents the structure of an error message
@@ -16,14 +15,14 @@ type Error struct {
 
 // Errorf return an new error response
 func Errorf(w http.ResponseWriter, r *http.Request, err error, code int, message string) {
-	logrus.WithFields(logrus.Fields{
-		"host":       r.Host,
-		"address":    r.RemoteAddr,
-		"method":     r.Method,
-		"requestURI": r.RequestURI,
-		"proto":      r.Proto,
-		"useragent":  r.UserAgent(),
-	}).WithError(err).Debug(message)
+	log.Debug().
+		Str("host", r.Host).
+		Str("address", r.RemoteAddr).
+		Str("method", r.Method).
+		Str("requestURI", r.RequestURI).
+		Str("proto", r.Proto).
+		Str("useragent", r.UserAgent()).
+		Err(err).Msg(message)
 
 	errorMessage := Error{
 		Error:   true,
@@ -39,14 +38,14 @@ func Errorf(w http.ResponseWriter, r *http.Request, err error, code int, message
 
 // Write return a new json response
 func Write(w http.ResponseWriter, r *http.Request, data interface{}) {
-	logrus.WithFields(logrus.Fields{
-		"host":       r.Host,
-		"address":    r.RemoteAddr,
-		"method":     r.Method,
-		"requestURI": r.RequestURI,
-		"proto":      r.Proto,
-		"useragent":  r.UserAgent(),
-	}).Debug(data)
+	log.Debug().
+		Str("host",       r.Host).
+		Str("address",    r.RemoteAddr).
+		Str("method",     r.Method).
+		Str("requestURI", r.RequestURI).
+		Str("proto",      r.Proto).
+		Str("useragent",  r.UserAgent()).
+		Msgf("%s", data)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)

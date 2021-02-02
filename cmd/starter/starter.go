@@ -7,10 +7,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/ricoberger/go-vue-starter/pkg/server"
-	"github.com/ricoberger/go-vue-starter/pkg/version"
+	"github.com/aovlllo/vue-template/pkg/server"
+	"github.com/aovlllo/vue-template/pkg/version"
 
-	"github.com/sirupsen/logrus"
+	//"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -23,18 +25,13 @@ func init() {
 	// Parse command-line flags
 	flag.Parse()
 
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	// Log settings
 	if *debugFlag {
-		logrus.SetReportCaller(true)
-		logrus.SetLevel(logrus.TraceLevel)
-	} else {
-		logrus.SetReportCaller(false)
-		logrus.SetLevel(logrus.InfoLevel)
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+		log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}
-
-	logrus.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp: true,
-	})
 }
 
 func main() {
@@ -51,12 +48,12 @@ func main() {
 	go func() {
 		c := make(chan os.Signal)
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
-		logrus.Infof("Received %s signal", <-c)
+		log.Info().Msgf("Received %s signal", <-c)
 		instance.Shutdown()
 	}()
 
 	// Start server
-	logrus.Infof("Starting starter %s", version.Info())
-	logrus.Infof("Build context %s", version.BuildContext())
+	log.Info().Msgf("Starting starter %s", version.Info())
+	log.Info().Msgf("Build context %s", version.BuildContext())
 	instance.Start(*configFileFlag)
 }

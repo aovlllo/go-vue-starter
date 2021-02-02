@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 )
 
 // ContextKey implements type for context key
@@ -21,14 +22,14 @@ const ContextJWTKey ContextKey = "jwt"
 // logMiddleware handles logging
 func (a *API) logMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		logrus.WithFields(logrus.Fields{
-			"host":       r.Host,
-			"address":    r.RemoteAddr,
-			"method":     r.Method,
-			"requestURI": r.RequestURI,
-			"proto":      r.Proto,
-			"useragent":  r.UserAgent(),
-		}).Info("HTTP request information")
+		log.Info().
+			Str("host", r.Host).
+			Str("address", r.RemoteAddr).
+			Str("method", r.Method).
+			Str("requestURI", r.RequestURI).
+			Str("proto", r.Proto).
+			Str("useragent", r.UserAgent()).
+			Msg("HTTP request information")
 
 		next.ServeHTTP(w, r)
 	})
@@ -142,11 +143,13 @@ func (a *API) createRandString(n int) string {
 	return string(b)
 }
 
-func (a *API) getID(claims jwt.MapClaims) (string, error) {
-	id, ok := claims["id"].(string)
+var errUnauthorized = errors.New("unauthorized")
+
+func (a *API) getID(claims jwt.MapClaims) (int, error) {
+	id, ok := claims["id"].(float64)
 	if !ok {
-		return "", fmt.Errorf("Unauthorized")
+		return -1, errUnauthorized
 	}
 
-	return id, nil
+	return int(id), nil
 }

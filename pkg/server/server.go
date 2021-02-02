@@ -7,13 +7,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/ricoberger/go-vue-starter/pkg/api"
-	"github.com/ricoberger/go-vue-starter/pkg/app"
-	"github.com/ricoberger/go-vue-starter/pkg/db"
-	"github.com/ricoberger/go-vue-starter/pkg/mail"
+	"github.com/aovlllo/vue-template/pkg/api"
+	"github.com/aovlllo/vue-template/pkg/app"
+	"github.com/aovlllo/vue-template/pkg/db"
 
 	"github.com/gorilla/mux"
-	"github.com/sirupsen/logrus"
+	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v2"
 )
 
@@ -24,7 +23,6 @@ type Config struct {
 	API  *api.Config  `yaml:"api"`
 	App  *app.Config  `yaml:"app"`
 	DB   *db.Config   `yaml:"database"`
-	Mail *mail.Config `yaml:"mail"`
 }
 
 // Instance represents an instance of the server
@@ -33,7 +31,6 @@ type Instance struct {
 	App    *app.App
 	Config *Config
 	DB     db.DB
-	Mail   *mail.Client
 
 	httpServer *http.Server
 }
@@ -51,33 +48,32 @@ func (i *Instance) Start(file string) {
 	// Load configuration file
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
-		logrus.WithError(err).Fatal("Could not load configuration")
+		log.Fatal().Err(err).Msg("Could not load configuration")
 	}
 
 	err = yaml.Unmarshal(data, &i.Config)
 	if err != nil {
-		logrus.WithError(err).Fatal("Could not load configuration")
+		log.Fatal().Err(err).Msg("Could not load configuration")
 	}
+	i.Config.DB.MySQL.User = os.Getenv("DB_USER")
+	i.Config.DB.MySQL.Password = os.Getenv("DB_PASSWORD")
 
 	// Establish database connection
 	i.DB, err = db.NewConnection(i.Config.DB)
 	if err != nil {
-		logrus.WithError(err).Fatal("Could not open database connection")
+		log.Fatal().Err(err).Msg("Could not open database connection")
 	}
 	defer i.DB.CloseConnection()
+	log.Debug().Msg("Successfully initiated DB connection")
 
-	// Setup mailing client
-	i.Mail = mail.NewClient(i.Config.Mail)
-
-	// Initialize API
-	i.API, err = api.New(i.Config.API, i.DB, i.Mail, router)
+	i.API, err = api.New(i.Config.API, i.DB, router)
 	if err != nil {
-		logrus.WithError(err).Fatal("Could not create API instance")
+		log.Fatal().Err(err).Msg("Could not create API instance")
 	}
 
 	i.App, err = app.New(i.Config.App, router)
 	if err != nil {
-		logrus.WithError(err).Fatal("Could not create app instance")
+		log.Fatal().Err(err).Msg("Could not create app instance")
 	}
 
 	// Startup the HTTP Server in a way that we can gracefully shut it down again
@@ -88,11 +84,10 @@ func (i *Instance) Start(file string) {
 
 	err = i.httpServer.ListenAndServe()
 	if err != http.ErrServerClosed {
-		logrus.WithError(err).Error("HTTP Server stopped unexpected")
+		log.Error().Err(err).Msg("HTTP Server stopped unexpected")
 		i.Shutdown()
-	} else {
-		logrus.WithError(err).Info("HTTP Server stopped")
 	}
+	log.Info().Err(err).Msg("HTTP Server stopped")
 }
 
 // Shutdown stops the server
@@ -105,10 +100,10 @@ func (i *Instance) Shutdown() {
 	defer cancel()
 	err := i.httpServer.Shutdown(ctx)
 	if err != nil {
-		logrus.WithError(err).Error("Failed to shutdown HTTP server gracefully")
+		log.Error().Err(err).Msg("Failed to shutdown HTTP server gracefully")
 		os.Exit(1)
 	}
 
-	logrus.Info("Shutdown HTTP server...")
+	log.Info().Msg("Shutdown HTTP server...")
 	os.Exit(0)
 }

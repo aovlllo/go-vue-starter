@@ -2,8 +2,7 @@
   <v-toolbar app color="primary" :clipped-left="$vuetify.breakpoint.lgAndUp" dark>
     <v-toolbar-title class="headline text-uppercase header" @click="goTo('/')">
       <v-toolbar-side-icon v-if="isAuthenticated === true" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <span v-bind:class="{ 'hidden-xs-only': isAuthenticated }">Go &#9829; Vue</span>
-      <span class="font-weight-light " v-bind:class="{ 'hidden-xs-only': isAuthenticated}"> STARTER</span>
+      <span v-bind:class="{ 'hidden-xs-only': isAuthenticated }">Simple Social Network</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn v-if="isAuthenticated === false" class="hidden-xs-only" to="/login" flat>Login</v-btn>

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ricoberger/go-vue-starter/pkg/model"
+	"github.com/aovlllo/vue-template/pkg/model"
 
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/primitive"
@@ -87,7 +87,7 @@ func (db *DB) GetUserByEmail(email string) (*model.User, error) {
 }
 
 // SaveUser saves the given user struct
-func (db *DB) SaveUser(u *model.User) error {
+func (db *DB) UpdateUser(u *model.User) error {
 	cursor := db.collections.users.FindOneAndReplace(
 		context.Background(),
 		bson.D{primitive.E{

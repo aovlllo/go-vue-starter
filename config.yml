@@ -1,28 +1,14 @@
-listen_address: :8080
+listen_address: :8081
 
 api:
-  domain: http://localhost:8080
+  domain: http://localhost:8081
   signing_secret: "your-super-secret"
 
 app:
 
 database:
-  mongodb:
-    connection_uri: mongodb://localhost:27017
-    database_name: go-vue-starter
+  mysql:
+    db_host: 127.0.0.1
+    db_port: 3306
+    db_name: example
 
-mail:
-  identity:
-  username:
-  password:
-  host:
-  addr:
-  from:
-
-  html: true
-
-  subjects:
-    welcome: "Welcome to the Go + Vue Starter"
-    reset-password: "Reset password request"
-    email-verification: "Verify your email address"
-    email-changed: "Your email address has been changed"

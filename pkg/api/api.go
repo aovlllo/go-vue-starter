@@ -3,10 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/ricoberger/go-vue-starter/pkg/api/response"
-	"github.com/ricoberger/go-vue-starter/pkg/db"
-	"github.com/ricoberger/go-vue-starter/pkg/mail"
-
+	"github.com/aovlllo/vue-template/pkg/api/response"
+	"github.com/aovlllo/vue-template/pkg/db"
 	"github.com/gorilla/mux"
 )
 
@@ -22,15 +20,13 @@ type API struct {
 
 	config *Config
 	db     db.DB
-	mail   *mail.Client
 }
 
 // New returns the api settings
-func New(config *Config, db db.DB, mail *mail.Client, router *mux.Router) (*API, error) {
+func New(config *Config, db db.DB, router *mux.Router) (*API, error) {
 	api := &API{
 		config: config,
 		db:     db,
-		mail:   mail,
 		Router: router,
 	}
 
@@ -45,10 +41,6 @@ func New(config *Config, db db.DB, mail *mail.Client, router *mux.Router) (*API,
 	api.Router.HandleFunc("/api/v1/account", api.corsMiddleware(api.logMiddleware(api.userSignupHandler))).Methods("POST")
 	api.Router.HandleFunc("/api/v1/account", api.corsMiddleware(api.logMiddleware(api.jwtMiddleware(api.userUpdateProfileHandler)))).Methods("PUT")
 	api.Router.HandleFunc("/api/v1/account", api.corsMiddleware(api.logMiddleware(api.jwtMiddleware(api.userProfileHandler)))).Methods("GET")
-	api.Router.HandleFunc("/api/v1/account/email/{id}/{token}", api.corsMiddleware(api.logMiddleware(api.userVerifyHandler))).Methods("GET")
-	api.Router.HandleFunc("/api/v1/account/email", api.corsMiddleware(api.logMiddleware(api.userResendVerificationMail))).Methods("POST")
-	api.Router.HandleFunc("/api/v1/account/password", api.corsMiddleware(api.logMiddleware(api.forgotPasswordHandler))).Methods("POST")
-	api.Router.HandleFunc("/api/v1/account/password", api.corsMiddleware(api.logMiddleware(api.resetPasswordHandler))).Methods("PUT")
 
 	return api, nil
 }

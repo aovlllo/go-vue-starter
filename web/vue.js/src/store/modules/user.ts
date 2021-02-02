@@ -7,9 +7,15 @@ import { IRootState } from './types';
 
 // Interfaces
 export interface IUserState {
-  email?: string;
-  id?: string;
   name?: string;
+  email?: string;
+  birth?: string;
+  secondName?: string;
+  city?: string;
+  sex?: string;
+  items?: string[];
+  interests?: string;
+  id?: string;
   token?: string;
 }
 
@@ -17,7 +23,6 @@ export interface IJWTDecoded {
   exp: number;
   id: string;
   email: string;
-  name: string;
 }
 
 // Initial State
@@ -26,9 +31,15 @@ const state: IUserState = (() => {
 
   if (token === null || token === '') {
     return {
-      email: undefined,
-      id: undefined,
       name: undefined,
+      email: undefined,
+      birth: undefined,
+      secondName: undefined,
+      city: undefined,
+      sex: undefined,
+      items: ['male', 'female', 'non binary'],
+      interests: undefined,
+      id: undefined,
       token: undefined,
     };
   }
@@ -39,7 +50,6 @@ const state: IUserState = (() => {
     return {
       email: undefined,
       id: undefined,
-      name: undefined,
       token: undefined,
     };
   }
@@ -47,7 +57,6 @@ const state: IUserState = (() => {
   return {
     email: decoded.email,
     id: decoded.id,
-    name: decoded.name,
     token,
   };
 })();
@@ -55,11 +64,7 @@ const state: IUserState = (() => {
 // Getters
 const getters: GetterTree<IUserState, IRootState> = {
   isAuthenticated(us: IUserState): boolean {
-    return us.token ? true : false;
-  },
-
-  getName(us: IUserState): string {
-    return us.name ? us.name : '';
+    return !!us.token;
   },
 
   getAvatar(us: IUserState): string {
@@ -104,13 +109,18 @@ const actions: ActionTree<IUserState, IRootState> = {
     }
   },
 
-  async signup({commit}: ActionContext<IUserState, IRootState>, {name, email, password}) {
+  async signup({commit}: ActionContext<IUserState, IRootState>, {name, secondName, email, password, birth, city, sex, interests}) {
     try {
       const response = await fetch(API_ENDPOINT + '/api/v1/account', {
         body: JSON.stringify({
           name,
+          secondName,
           email,
           password,
+          birth,
+          city,
+          sex,
+          interests,
         }),
         headers: {
           'Accept': 'application/json',
@@ -134,12 +144,18 @@ const actions: ActionTree<IUserState, IRootState> = {
     }
   },
 
-  async save({commit}: ActionContext<IUserState, IRootState>, {name, email}) {
+  async save({commit}: ActionContext<IUserState, IRootState>, {name, secondName, email, password, birth, city, sex, interests}) {
     try {
       const response = await fetch(API_ENDPOINT + '/api/v1/account', {
         body: JSON.stringify({
           name,
+          secondName,
           email,
+          password,
+          birth,
+          city,
+          sex,
+          interests,
         }),
         headers: {
           'Accept': 'application/json',
@@ -204,6 +220,11 @@ const mutations: MutationTree<IUserState> = {
     us.email = payload.email;
     us.id = payload.id;
     us.name = payload.name;
+    us.secondName = payload.secondName;
+    us.birth = payload.birth;
+    us.city = payload.city;
+    us.sex = payload.sex;
+    us.interests = payload.interests;
   },
 
   SET_TOKEN(us: IUserState, payload: IUserState) {
@@ -218,7 +239,11 @@ const mutations: MutationTree<IUserState> = {
     us.email = undefined;
     us.id = undefined;
     us.name = undefined;
-    us.token = undefined;
+    us.secondName = undefined;
+    us.birth = undefined;
+    us.city = undefined;
+    us.sex = undefined;
+    us.interests = undefined;
   },
 };
 

@@ -15,7 +15,6 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <router-link to="/forgot-password">Forgotton your password?</router-link>
             <v-spacer></v-spacer>
             <v-btn color="primary" :loading="loading" :disabled="loading" @click="doLogin">Login</v-btn>
           </v-card-actions>

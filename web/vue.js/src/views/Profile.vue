@@ -12,7 +12,13 @@
           <v-flex xs12>
             <v-form ref="form">
               <v-text-field v-model="name" :rules="nameRules" prepend-icon="person" name="name" label="Name" type="text"></v-text-field>
+              <v-text-field v-model="secondName" prepend-icon="person" name="secondName" label="Second Name" type="text"></v-text-field>
               <EmailTextField v-model="email" />
+              <DateField v-model="birth" />
+              <v-text-field v-model="city" prepend-icon="place" name="city" label="City" type="text"></v-text-field>
+              <v-select v-model="sex" :items="$store.state.user.items" :rules="sexRules" prepend-icon="person_outline" name="sex" label="Sex"> </v-select>
+              <v-text-field v-model="interests" prepend-icon="mood" name="interests" label="Interests" type="text"></v-text-field>
+
               <Alert v-model="success" type="success" />
               <Alert v-model="error" type="error" />
               <Alert v-model="info" type="info" />
@@ -34,13 +40,15 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 
-import Alert from '../components/Alert.vue';
-import EmailTextField from '../components/EmailTextField.vue';
-import { IUserState } from '../store/modules/user';
+import Alert from '@/components/Alert.vue';
+import DateField from '@/components/DateField.vue';
+import EmailTextField from '@/components/EmailTextField.vue';
+import { IUserState } from '@/store/modules/user';
 
 @Component({
   components: {
     Alert,
+    DateField,
     EmailTextField,
   },
 })
@@ -50,6 +58,11 @@ export default class Profile extends Vue {
 
   private name: string = '';
   private email: string = '';
+  private birth: string = '';
+  private secondName: string = '';
+  private city: string = '';
+  private sex: string = '';
+  private interests: string = '';
   private loading: boolean = false;
   private success: string = '';
   private error: string = '';
@@ -59,9 +72,18 @@ export default class Profile extends Vue {
     (v: string) => !!v || 'Name is required',
   ];
 
+  private sexRules = [
+    (v: string) => !!v || 'Sex is required',
+  ];
+
   private mounted() {
     this.name = this.user.name ? this.user.name : '';
     this.email = this.user.email ? this.user.email : '';
+    this.birth = this.user.birth ? this.user.birth : '';
+    this.secondName = this.user.secondName ? this.user.secondName : '';
+    this.city = this.user.city ? this.user.city : '';
+    this.sex = this.user.sex ? this.user.sex : '';
+    this.interests = this.user.interests ? this.user.interests : '';
   }
 
   private saveProfile() {
@@ -73,7 +95,7 @@ export default class Profile extends Vue {
     if ((this.$refs.form as HTMLFormElement).validate()) {
       this.loading = true;
 
-      this.save({name: this.name, email: this.email}).then(() => {
+      this.save({name: this.name, secondName: this.secondName, email: this.email, birth: this.birth, city: this.city, sex: this.sex, interests: this.interests}).then(() => {
         this.success = 'Changes were saved';
         this.info = tmpInfo;
         this.loading = false;

@@ -1,7 +1,8 @@
 <template>
   <v-container fluid fill-height>
     <v-layout align-center justify-center>
-      <v-flex xs12 sm8 md4>
+      <v-flex xs12 sm10 md4>
+        <Alert v-if="info" type="success" value="Success. You can login with provided credentials" />
         <v-card class="elevation-12">
           <v-toolbar dark color="primary">
             <v-toolbar-title>Login</v-toolbar-title>
@@ -25,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import Alert from '../components/Alert.vue';
@@ -40,6 +41,7 @@ import PasswordTextField from '../components/PasswordTextField.vue';
   },
 })
 export default class Login extends Vue {
+  @Prop(Boolean) public info: boolean = false;
   @Action('login', { namespace: 'user' }) private login: any;
 
   private email: string = '';

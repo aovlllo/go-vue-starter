@@ -13,6 +13,7 @@ const router = new Router({
   routes: [
     {path: '/', name: 'home', component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')},
     {path: '/login', name: 'login', component: () => import(/* webpackChunkName: "login" */ './views/Login.vue')},
+    {path: '/login', name: 'login-after', component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'), props: {info: true}},
     {path: '/signup', name: 'signup', component: () => import(/* webpackChunkName: "signup" */ './views/Signup.vue')},
     {path: '/welcome', name: 'welcome', component: () => import(/* webpackChunkName: "welcome" */ './views/Welcome.vue')},
     {path: '/profile', name: 'profile', component: () => import(/* webpackChunkName: "profile" */ './views/Profile.vue'), meta: { requiresAuth: true }},

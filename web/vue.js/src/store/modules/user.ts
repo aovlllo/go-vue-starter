@@ -2,7 +2,7 @@ import jwtDecode from 'jwt-decode';
 import md5 from 'md5';
 import { ActionContext, ActionTree, GetterTree, Module, MutationTree } from 'vuex';
 
-import { API_ENDPOINT, AUTH_TOKEN } from '../../constants';
+import { API_ENDPOINT, AUTH_TOKEN, USER_LOCAL_STORE } from '@/constants';
 import { IRootState } from './types';
 
 // Interfaces
@@ -13,7 +13,6 @@ export interface IUserState {
   secondName?: string;
   city?: string;
   sex?: string;
-  items?: string[];
   interests?: string;
   id?: string;
   token?: string;
@@ -37,7 +36,6 @@ const state: IUserState = (() => {
       secondName: undefined,
       city: undefined,
       sex: undefined,
-      items: ['male', 'female', 'non binary'],
       interests: undefined,
       id: undefined,
       token: undefined,
@@ -65,6 +63,10 @@ const state: IUserState = (() => {
 const getters: GetterTree<IUserState, IRootState> = {
   isAuthenticated(us: IUserState): boolean {
     return !!us.token;
+  },
+
+  getName(us: IUserState): string {
+    return us.name ? us.name : '';
   },
 
   getAvatar(us: IUserState): string {
@@ -212,11 +214,21 @@ const actions: ActionTree<IUserState, IRootState> = {
   logout({commit}: ActionContext<IUserState, IRootState>) {
     commit('UNSET_USER');
   },
+
+  restoreState({commit}: ActionContext<IUserState, IRootState>) {
+    const st = localStorage.getItem(USER_LOCAL_STORE);
+    if (st != null) {
+      commit('SET_USER', JSON.parse(st));
+    }
+  },
 };
 
 // Mutations
 const mutations: MutationTree<IUserState> = {
+
   SET_USER(us: IUserState, payload: IUserState) {
+    localStorage.setItem(USER_LOCAL_STORE, JSON.stringify(payload));
+
     us.email = payload.email;
     us.id = payload.id;
     us.name = payload.name;
@@ -235,6 +247,7 @@ const mutations: MutationTree<IUserState> = {
 
   UNSET_USER(us: IUserState) {
     localStorage.removeItem(AUTH_TOKEN);
+    localStorage.removeItem('userMsg');
 
     us.email = undefined;
     us.id = undefined;

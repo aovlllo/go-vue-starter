@@ -50,13 +50,14 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import { Action, Getter, State } from 'vuex-class';
 
-import { IUserState } from '../store/modules/user';
+import { IUserState } from '@/store/modules/user';
 
 @Component
 export default class Sidebar extends Vue {
   @Prop(Boolean) public value!: boolean;
 
   @Action('logout', { namespace: 'user' }) private logout: any;
+  @Action('restoreState', { namespace: 'user' }) private restoreState: any;
   @Getter('getName', { namespace: 'user' }) private getName!: string;
   @Getter('getAvatar', { namespace: 'user' }) private getAvatar!: string;
   @State('user') private user!: IUserState;
@@ -76,6 +77,10 @@ export default class Sidebar extends Vue {
 
   @Emit('input')
   public changeValue(val: boolean) { /* */ }
+
+  private created() {
+    this.restoreState();
+  }
 
   private goTo(path: string) {
     this.$router.push({ path });

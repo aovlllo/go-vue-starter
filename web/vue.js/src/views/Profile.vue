@@ -16,7 +16,7 @@
               <EmailTextField v-model="email" />
               <DateField v-model="birth" />
               <v-text-field v-model="city" prepend-icon="place" name="city" label="City" type="text"></v-text-field>
-              <v-select v-model="sex" :items="$store.state.user.items" :rules="sexRules" prepend-icon="person_outline" name="sex" label="Sex"> </v-select>
+              <v-select v-model="sex" :items="items" :rules="sexRules" prepend-icon="person_outline" name="sex" label="Sex"> </v-select>
               <v-text-field v-model="interests" prepend-icon="mood" name="interests" label="Interests" type="text"></v-text-field>
 
               <Alert v-model="success" type="success" />
@@ -43,6 +43,8 @@ import { Action, State } from 'vuex-class';
 import Alert from '@/components/Alert.vue';
 import DateField from '@/components/DateField.vue';
 import EmailTextField from '@/components/EmailTextField.vue';
+
+import { SItems } from '@/constants';
 import { IUserState } from '@/store/modules/user';
 
 @Component({
@@ -55,6 +57,7 @@ import { IUserState } from '@/store/modules/user';
 export default class Profile extends Vue {
   @State('user') private user!: IUserState;
   @Action('save', { namespace: 'user' }) private save: any;
+  @Action('restoreState', { namespace: 'user' }) private restoreState: any;
 
   private name: string = '';
   private email: string = '';
@@ -68,6 +71,8 @@ export default class Profile extends Vue {
   private error: string = '';
   private info: string = '';
 
+  private items: string[] = SItems;
+
   private nameRules = [
     (v: string) => !!v || 'Name is required',
   ];
@@ -75,6 +80,10 @@ export default class Profile extends Vue {
   private sexRules = [
     (v: string) => !!v || 'Sex is required',
   ];
+
+  private created() {
+    this.restoreState();
+  }
 
   private mounted() {
     this.name = this.user.name ? this.user.name : '';
@@ -84,6 +93,8 @@ export default class Profile extends Vue {
     this.city = this.user.city ? this.user.city : '';
     this.sex = this.user.sex ? this.user.sex : '';
     this.interests = this.user.interests ? this.user.interests : '';
+
+    this.restoreState('userMsg');
   }
 
   private saveProfile() {

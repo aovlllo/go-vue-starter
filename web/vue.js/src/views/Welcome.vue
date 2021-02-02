@@ -11,7 +11,7 @@
         <v-layout row wrap>
           <v-flex xs12>
             <p>Hi {{user.name}} and welcome to the Go &#9829; Vue Starter. Befor you start please verify your email address. If you have not get an verification email you can use the button below to resend the verification email.</p>
-            <LoremIpsum />
+            <Login />
           </v-flex>
         </v-layout>
 
@@ -31,13 +31,16 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { State } from 'vuex-class';
 
-import Alert from '../components/Alert.vue';
-import LoremIpsum from '../components/LoremIpsum.vue';
-import { API_ENDPOINT } from '../constants';
-import { IUserState } from '../store/modules/user';
+import Alert from '@/components/Alert.vue';
+import LoremIpsum from '@/components/LoremIpsum.vue';
+import Login from '@/views/Login.vue';
+
+import { API_ENDPOINT } from '@/constants';
+import { IUserState } from '@/store/modules/user';
 
 @Component({
   components: {
+    Login,
     Alert,
     LoremIpsum,
   },

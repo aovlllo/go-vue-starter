@@ -15,7 +15,7 @@
               <PasswordTextField v-model="password" />
               <DateField v-model="birth" />
               <v-text-field v-model="city" prepend-icon="place" name="city" label="City" type="text"></v-text-field>
-              <v-select v-model="sex" :items="$store.state.user.items" :rules="sexRules" prepend-icon="person_outline" name="sex" label="Sex"> </v-select>
+              <v-select v-model="sex" :items="items" :rules="sexRules" prepend-icon="person_outline" name="sex" label="Sex"> </v-select>
               <v-text-field v-model="interests" prepend-icon="mood" name="interests" label="Interests" type="text"></v-text-field>
               <Alert v-model="error" type="error" />
             </v-form>
@@ -35,10 +35,12 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
-import Alert from '../components/Alert.vue';
-import DateField from '../components/DateField.vue';
-import EmailTextField from '../components/EmailTextField.vue';
-import PasswordTextField from '../components/PasswordTextField.vue';
+import { SItems } from '@/constants';
+
+import Alert from '@/components/Alert.vue';
+import DateField from '@/components/DateField.vue';
+import EmailTextField from '@/components/EmailTextField.vue';
+import PasswordTextField from '@/components/PasswordTextField.vue';
 
 @Component({
   components: {
@@ -62,6 +64,8 @@ export default class Signup extends Vue {
   private loading: boolean = false;
   private error: string = '';
 
+  private items: string[] = SItems;
+
   private nameRules = [
     (v: string) => !!v || 'Name is required',
   ];
@@ -76,7 +80,7 @@ export default class Signup extends Vue {
 
       this.signup({name: this.name, secondName: this.secondName, email: this.email, password: this.password, birth: this.birth, city: this.city, sex: this.sex, interests: this.interests}).then(() => {
         this.loading = false;
-        this.$router.push({ path: '/welcome' });
+        this.$router.push({ name: 'login-after' });
       }).catch((err: any) => {
         this.error = err.message;
         this.loading = false;

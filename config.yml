@@ -1,14 +1,14 @@
-listen_address: :8081
+listen_address: :8080
 
 api:
-  domain: http://localhost:8081
+  domain: http://localhost:8080
   signing_secret: "your-super-secret"
 
 app:
 
 database:
   mysql:
-    db_host: 127.0.0.1
+    db_host: db
     db_port: 3306
     db_name: example
 

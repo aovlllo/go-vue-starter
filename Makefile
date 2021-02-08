@@ -12,11 +12,12 @@ BUILDTIME ?= $(shell date '+%Y%m%d-%H:%M:%S')
 
 build: static
 	for target in $(WHAT); do \
-		go build -ldflags "-X github.com/aovlllo/vue-template/pkg/version.Version=${VERSION} \
+		CGO_ENABLED=0 go build -ldflags "-X github.com/aovlllo/vue-template/pkg/version.Version=${VERSION} \
 			-X github.com/aovlllo/vue-template/pkg/version.Revision=${REVISION} \
 			-X github.com/aovlllo/vue-template/pkg/version.Branch=${BRANCH} \
 			-X github.com/aovlllo/vue-template/pkg/version.BuildUser=${BUILDUSER} \
-			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME}" \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME} \
+			-w -s" \
 			-o ./bin/$$target ./cmd/$$target; \
 	done
 
@@ -36,7 +37,8 @@ build-linux-amd64:
 			-X github.com/aovlllo/vue-template/pkg/version.Revision=${REVISION} \
 			-X github.com/aovlllo/vue-template/pkg/version.Branch=${BRANCH} \
 			-X github.com/aovlllo/vue-template/pkg/version.BuildUser=${BUILDUSER} \
-			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME}" \
+			-X github.com/aovlllo/vue-template/pkg/version.BuildDate=${BUILDTIME} \
+			-w -s" \
 			-o ./bin/go-vue-starter-${VERSION}-linux-amd64/$$target ./cmd/$$target; \
 	done
 

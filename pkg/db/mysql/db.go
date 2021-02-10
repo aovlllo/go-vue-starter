@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"net/url"
+	"time"
 )
 
 // Config represents MySQL configuration
@@ -47,6 +48,10 @@ func NewConnection(config *Config) (*DB, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxLifetime(4 * time.Minute)
 
 	return &DB{db}, nil
 }

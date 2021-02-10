@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/rs/zerolog/log"
 	"net/url"
 	"time"
 )
@@ -36,15 +37,34 @@ func (c *Config) ConnectionURL() string {
 	return fmt.Sprintf("%s@%s/%s", url.UserPassword(c.User, c.Password), host, c.Name)
 }
 
-// NewConnection creates a new database connection
-func NewConnection(config *Config) (*DB, error) {
-	conn := config.ConnectionURL()
+func tryConnection(conn string) (*sql.DB, error) {
 	db, err := sql.Open("mysql", conn)
 	if err != nil {
 		return nil, err
 	}
 
 	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
+}
+
+// NewConnection creates a new database connection
+func NewConnection(config *Config) (*DB, error) {
+	conn := config.ConnectionURL()
+
+	var db *sql.DB
+	var err error
+	for i := 1; i < 6; i++ {
+		db, err = tryConnection(conn)
+		if err == nil {
+			break
+		}
+		log.Warn().Msgf("unsuccessful connection, wait for %d seconds", i*10)
+		time.Sleep(time.Duration(i*10) * time.Second)
+	}
 	if err != nil {
 		return nil, err
 	}
